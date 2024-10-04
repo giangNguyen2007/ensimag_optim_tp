@@ -1,0 +1,24 @@
+Le TP est dans le répertoire :  /matieres/4MMAOD6/2022-10-TP-AOD-ADN-Docs-fournis/
+
+tp-ADN-distance.tgz  : à décompresser chez vous, par exemple avec la commande:
+
+    $ tar xvfz /matieres/4MMAOD6/2023-10-TP-AOD-ADN-Docs-fournis/tp-ADN-distance.tgz
+
+Les sources du programme récursif avec memoisation sont dans src :
+
+    Pour generer l'executable (dans bin), taper la commande:  make binary
+
+    Pour générer la documentation (doxygen) : make doc 
+
+    Pour verifier si le programme est correct: make test
+
+    Pour faire des experimenattions avec valgrind: make test-valgrind
+
+Un modèle de rapport (2 à 4 pages max) répondant aux questions de l'énoncé est fourni en latex dans:
+rapport-a-rendre/rapport-AOD-adn.tex
+
+IMPORTANT: Les benchmarks de sequences ADN de grosse taile (200 Mo chacun, utilisés dans les tests) sont dans  /matieres/4MMAOD6/TP-AOD-ADN-Benchmark
+Ce répertoire ne doit pas être recopié chez vous (trop gros) ! 
+
+
+
