@@ -137,3 +137,98 @@ long EditDistance_NW_Rec(char* A, size_t lengthA, char* B, size_t lengthB)
    return res ;
 }
 
+
+/*
+ * PROGRAM ITERATIF - Memoire Lineaire (N + M)
+ */ 
+long EditDistance_NW_Ite(char* A, size_t lengthA, char* B, size_t lengthB)
+{
+   _init_base_match() ;
+   struct NW_MemoContext ctx;
+   if (lengthA >= lengthB) /* X is the longest sequence, Y the shortest */
+   {  ctx.X = A ;
+      ctx.M = lengthA ;
+      ctx.Y = B ;
+      ctx.N = lengthB ;
+   }
+   else
+   {  ctx.X = B ;
+      ctx.M = lengthB ;
+      ctx.Y = A ;
+      ctx.N = lengthA ;
+   }
+   size_t M = ctx.M ;
+   size_t N = ctx.N ;
+
+   printf(" M = %d \n", M);
+   printf(" N = %d \n", N);
+
+   char Xi;
+   char Yj;
+   long temp = 0;
+
+   long *memo = (long *) malloc ( (N+1) * sizeof(long)) ;
+   long *prev_col = (long *) malloc ( (N+1) * sizeof(long)) ;
+   if (memo == NULL) { perror("EditDistance_NW_Rec: malloc of ctx_memo" ); exit(EXIT_FAILURE); }
+   memo[N+1] = 0;
+   printf(" memo[%d] = %d \n", N+1, memo[N+1]);
+
+   for (int j= N; j >= 0; --j)
+   {
+      if (!isBase(ctx.Y[j])) { memo[j] = memo[j+1];}
+      else 
+      {
+         memo[j] = memo[j+1] + INSERTION_COST;
+      }
+
+      printf(" memo[%d] = %d \n", j, memo[j]);
+   }
+
+
+   for (int i= M; i >= 0; --i) 
+   {  
+      Xi = ctx.X[i] ;
+      printf(" check col %d  , Xi = %c \n", i, Xi);
+      for (int j= N + 1; j >= 0; --j)
+      {
+         
+         Yj = ctx.Y[j] ;
+
+         
+         prev_col[j] = memo[j];
+
+         if (j == N + 1){
+            memo[j] = (isBase(Xi) ? INSERTION_COST : 0) + memo[j];
+         }
+         else if (!isBase(Yj)) 
+         { 
+            memo[j] = memo[j+1];
+         }
+         else if (!isBase(Xi))
+         {
+            memo[j] = memo[j];
+         }
+         else
+         {
+            memo[j] = /* initialization  with cas 1*/
+                   ( isUnknownBase(Xi) ?  SUBSTITUTION_UNKNOWN_COST 
+                          : ( isSameBase(Xi, Yj) ? 0 : SUBSTITUTION_COST ) 
+                   )
+                   + prev_col[j+1] ; 
+
+            { long cas2 = INSERTION_COST + prev_col[j] ;      
+            if (cas2 < memo[j] ) memo[j] = cas2 ;
+            }
+
+            { long cas3 = INSERTION_COST + memo[j - 1] ;      
+            if (cas3 < memo[j]) memo[j] = cas3 ; 
+            }
+         }
+         printf(" Y[%d]= %c memo[%d] = %d  \n", j, Yj, j, memo[j]);
+      }
+      printf(" ===== =========END COL [%d]=================== \n", i);
+   }
+   
+   
+   return memo[0] ;
+}
